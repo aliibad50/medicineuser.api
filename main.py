@@ -89,13 +89,13 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/")
-def give_display():
-    return {"Hello": "Sirgg"}
-
 class UserMedicineRequest(BaseModel):
     user_id: int
     medicine_names: list[str]
+
+@app.get("//")
+def give_display():
+    return {"Hello": "Sirgg"}
 
 @app.get("/")
 async def root():
