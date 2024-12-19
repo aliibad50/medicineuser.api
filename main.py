@@ -28,10 +28,14 @@ html = f"""
     </body>
 </html>
 """
+
+
 DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+Base.metadata.create_all(bind=engine)
 
 # Many-to-many relationship table
 user_medicine = Table(
@@ -55,7 +59,6 @@ class User(Base):
     name = Column(String, index=True)
     medicines = relationship("Medicine", secondary=user_medicine, back_populates="users")
 
-Base.metadata.create_all(bind=engine)
 
 def init_db():
     db = SessionLocal()
