@@ -10,7 +10,8 @@ app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-html = f"""
+# HTML c
+html = """
 <!DOCTYPE html>
 <html>
     <head>
@@ -19,30 +20,27 @@ html = f"""
     </head>
     <body>
         <div class="bg-gray-200 p-4 rounded-lg shadow-lg">
-            <h1>Hello from FastAPI@</h1>
+            <h1>Hello from FastAPI</h1>
             <ul>
                 <li><a href="/docs">/docs</a></li>
             </ul>
-            <p>Powered by <a href="https://facebook.com" target="_blank">Facebook</a></p>
+            <p>Powered by <a href="https://vercel.com" target="_blank">Vercel</a></p>
         </div>
     </body>
 </html>
 """
-
 
 DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-Base.metadata.create_all(bind=engine)
-
-# Many-to-many relationship table
+# Many-to-many 
 user_medicine = Table(
     "user_medicine",
     Base.metadata,
     Column("user_id", Integer, ForeignKey("users.id"), primary_key=True),
-    Column("medicine_id", Integer, ForeignKey("medicines.id"), primary_key=True)
+    Column("medicine_id", Integer, ForeignKey("medicines.id"), primary_key=True),
 )
 
 # Medicine model
@@ -59,25 +57,26 @@ class User(Base):
     name = Column(String, index=True)
     medicines = relationship("Medicine", secondary=user_medicine, back_populates="users")
 
+Base.metadata.create_all(bind=engine)
 
 def init_db():
     db = SessionLocal()
     if not db.query(Medicine).first():
         medicines = [
-            Medicine(id=1, name="Paracetamol"),
-            Medicine(id=2, name="Broufen"),
-            Medicine(id=3, name="Panadol"),
-            Medicine(id=4, name="Alp"),
-            Medicine(id=5, name="Calpol")
+            Medicine(name="Paracetamol"),
+            Medicine(name="Broufen"),
+            Medicine(name="Panadol"),
+            Medicine(name="Alp"),
+            Medicine(name="Calpol"),
         ]
         db.add_all(medicines)
         db.commit()
     if not db.query(User).first():
         users = [
-            User(id=1, name="John Doe"),
-            User(id=2, name="Jane Smith"),
-            User(id=3, name="Bjorn"),
-            User(id=4, name="Ali")
+            User(name="John Doe"),
+            User(name="Jane Smith"),
+            User(name="Bjorn"),
+            User(name="Ali"),
         ]
         db.add_all(users)
         db.commit()
@@ -85,6 +84,7 @@ def init_db():
 
 init_db()
 
+# Dependency to get database session
 def get_db():
     db = SessionLocal()
     try:
@@ -92,13 +92,10 @@ def get_db():
     finally:
         db.close()
 
+# Request model for user-medicine operations
 class UserMedicineRequest(BaseModel):
     user_id: int
     medicine_names: list[str]
-
-@app.get("//")
-def give_display():
-    return {"Hello": "Sirgg"}
 
 @app.get("/")
 async def root():
@@ -124,21 +121,11 @@ def buy_medicines(request: UserMedicineRequest, db: Session = Depends(get_db)):
     medicines = db.query(Medicine).filter(Medicine.name.in_(request.medicine_names)).all()
     if not medicines:
         raise HTTPException(status_code=404, detail="One or more medicines not found")
-    # User can buy the medicines
     for medicine in medicines:
         if medicine not in user.medicines:
             user.medicines.append(medicine)
     db.commit()
     return {"user_id": user.id, "bought_medicines": [m.name for m in medicines]}
 
-# @app.get("/user/{user_id}")
-# def get_user(user_id: int, db: Session = Depends(get_db)):
-#     user = db.query(User).filter(User.id == user_id).first()
-#     if not user:
-#         raise HTTPException(status_code=404, detail="User not found")
-#     return {"id": user.id, "name": user.name, "medicines": [m.name for m in user.medicines]}
-
-
 from mangum import Mangum
-
 handler = Mangum(app)

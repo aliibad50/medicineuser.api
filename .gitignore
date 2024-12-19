@@ -189,3 +189,5 @@ __pycache__/
 
 # Ignore environment files
 .env
+
+test.db
