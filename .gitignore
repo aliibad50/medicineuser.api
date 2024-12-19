@@ -170,3 +170,22 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Ignore SQLite database file
+test.db
+
+# Ignore Python virtual environment
+venv/
+
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore IDE-specific files
+*.idea/
+.vscode/
+
+# Ignore environment files
+.env
