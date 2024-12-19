@@ -137,3 +137,8 @@ def buy_medicines(request: UserMedicineRequest, db: Session = Depends(get_db)):
 #     if not user:
 #         raise HTTPException(status_code=404, detail="User not found")
 #     return {"id": user.id, "name": user.name, "medicines": [m.name for m in user.medicines]}
+
+
+from mangum import Mangum
+
+handler = Mangum(app)
