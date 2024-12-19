@@ -97,6 +97,10 @@ class UserMedicineRequest(BaseModel):
     user_id: int
     medicine_names: list[str]
 
+@app.get("/")
+async def root():
+    return HTMLResponse(html)
+
 @app.post("/user/add_medicines")
 def add_medicines_to_user(request: UserMedicineRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == request.user_id).first()
