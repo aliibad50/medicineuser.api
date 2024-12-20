@@ -36,7 +36,7 @@ html = """
             <ul>
                 <li><a href="/docs">/docs</a></li>
             </ul>
-            <p>Powered by <a href="https://vercel.com" target="_blank">Vercel</a></p>
+            <p>Powered by <a href="https://facebook.com" target="_blank">Facebook</a></p>
         </div>
     </body>
 </html>
