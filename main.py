@@ -11,9 +11,9 @@ import os
 
 load_dotenv()  # Load environment variables from the .env file
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    raise ValueError("DATABASE_URL is not set in the environment or .env file")
+# DATABASE_URL = os.getenv("DATABASE_URL")
+# if not DATABASE_URL:
+#     raise ValueError("DATABASE_URL is not set in the environment or .env file")
 
 # Setup basic logging
 logging.basicConfig(level=logging.INFO)
