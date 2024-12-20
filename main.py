@@ -11,9 +11,9 @@ import os
 
 load_dotenv()  # Load environment variables from the .env file
 
-# DATABASE_URL = os.getenv("DATABASE_URL")
-# if not DATABASE_URL:
-#     raise ValueError("DATABASE_URL is not set in the environment or .env file")
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL is not set in the environment or .env file")
 
 # Setup basic logging
 logging.basicConfig(level=logging.INFO)
@@ -43,7 +43,7 @@ html = """
 """
 
 # Database configuration
-DATABASE_URL = os.getenv("DATABASE_URL=postgresql://postgres:[paGAL12345]@db.wvwhbbyhimywfitvksmc.supabase.co:5432/aliibad50")
+DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
