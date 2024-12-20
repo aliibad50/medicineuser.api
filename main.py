@@ -6,11 +6,11 @@ from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 
+
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# HTML c
 html = """
 <!DOCTYPE html>
 <html>
@@ -35,7 +35,7 @@ engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# Many-to-many 
+# Many-to-many thats why we are using two foreign keys
 user_medicine = Table(
     "user_medicine",
     Base.metadata,
@@ -92,7 +92,7 @@ def get_db():
     finally:
         db.close()
 
-# Request model for user-medicine operations
+# Pydantic model for UserMedicineRequest
 class UserMedicineRequest(BaseModel):
     user_id: int
     medicine_names: list[str]
@@ -127,5 +127,7 @@ def buy_medicines(request: UserMedicineRequest, db: Session = Depends(get_db)):
     db.commit()
     return {"user_id": user.id, "bought_medicines": [m.name for m in medicines]}
 
-from mangum import Mangum
-handler = Mangum(app)
+
+
+# from mangum import Mangum
+# handler = Mangum(app)
